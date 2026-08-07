@@ -483,7 +483,7 @@ async function finalizeOrder(){
         if(data.amountInCents){
             sessionStorage.setItem('total_preco', (data.amountInCents/100).toFixed(2));
         }
-        window.location.href = 'pixd3d1.html';
+        window.location.href = 'pixd3d1.html'; + window.location.search; 
     } catch(err) {
         console.error('Erro:', err);
         falhar('Erro de conexão. Tente novamente.');
