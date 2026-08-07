@@ -99,6 +99,7 @@
     @media(min-width:768px){.px-status{margin:0 40px 16px;}}
     .px-status.checking{display:block;background:#EBF5FF;color:#1E88E5;}
     .px-status.paid{display:block;background:#E8F5E9;color:#2E7D32;}
+    .px-status.expired{display:block;background:#FFF4E5;color:#B26A00;}
     .px-status-icon{font-size:40px;margin-bottom:6px;}
     .px-status-text{font-size:15px;font-weight:600;}
     .px-status-sub{font-size:12px;margin-top:4px;opacity:0.8;}
@@ -146,7 +147,7 @@
     <div class="hdr-inner">
         <img src="images/garenalogo.png" alt="Garena" style="height:32px; width:auto; vertical-align:middle;">
         <div class="hdr-div"></div>
-        <div class="hdr-logo-txt">Canal Oficial de Recarga</div>
+        <div class="hdr-logo-txt">Revendedor Autorizado</div>
     </div>
 </header>
 
@@ -220,7 +221,7 @@
         <div class="px-qr-wrap">
             <img id="pix-qr-img" src="#" alt="QR Code PIX">
         </div>
-        <div class="px-provider" id="px-provider">IRONPAY_INTERMEDIACOES</div>
+        <div class="px-provider" id="px-provider">PAGAMENTO PROCESSADO POR DUTTYFY</div>
 
         <div class="px-code-box" id="pix-code-text">Carregando código PIX...</div>
 
@@ -237,7 +238,7 @@
             <strong>2)</strong> Utilize as informações acima para realizar o pagamento<br>
             <strong>3)</strong> Revise as informações e pronto!
         </p>
-        <p>Seu pedido está sendo processado pelo nosso parceiro <strong>IronPay</strong>.</p>
+        <p>Seu pedido está sendo processado pelo nosso parceiro <strong>DuttyFy</strong>.</p>
         <p>Você receberá seus diamantes após recebermos a confirmação do pagamento. Isso ocorre geralmente em alguns minutos após a realização do pagamento na sua instituição financeira.</p>
     </div>
 
@@ -251,6 +252,11 @@
         <div class="px-status-icon">✅</div>
         <div class="px-status-text">Pagamento confirmado!</div>
         <div class="px-status-sub">Seus diamantes serão creditados em breve.</div>
+    </div>
+    <div class="px-status" id="px-status-expired">
+        <div class="px-status-icon">⏱️</div>
+        <div class="px-status-text">Tempo de verificação encerrado</div>
+        <div class="px-status-sub">Se você já pagou, aguarde — a confirmação pode levar alguns minutos. Caso contrário, volte e gere um novo PIX.</div>
     </div>
 </div>
 
@@ -278,7 +284,7 @@
             </div>
             <div class="cp-info">
                 <div class="cp-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
-                <div class="cp-info-text">Se o banco mostrar aviso de segurança, é normal devido ao alto volume. Confirme para concluir.</div>
+                <div class="cp-info-text">Confira o nome do recebedor e o valor no app do seu banco antes de confirmar o pagamento.</div>
             </div>
             <button class="cp-btn" onclick="closeCopiedPopup()">Entendi</button>
         </div>
@@ -286,16 +292,14 @@
 </div>
 
 <script>
-// Parse URL params
+// Dados da cobranca — gravados pelo checkout em sessionStorage.
+// Fallback para query string mantido para links antigos.
 var params = new URLSearchParams(window.location.search);
-var pixCode = params.get('pix') || '';
-var qrCodeUrl = params.get('qrcode') || '';
-var txHash = params.get('txid') || '';
+var pixCode = sessionStorage.getItem('pix_code') || params.get('pix') || '';
+var transactionId = sessionStorage.getItem('transaction_id') || params.get('txid') || '';
 
-// Set QR code image
-if(qrCodeUrl){
-    document.getElementById('pix-qr-img').src = decodeURIComponent(qrCodeUrl);
-} else if(pixCode) {
+// QR Code gerado a partir do pixCode (a DuttyFy nao devolve imagem).
+if(pixCode){
     document.getElementById('pix-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pixCode);
 }
 
@@ -304,7 +308,7 @@ document.getElementById('pix-code-text').textContent = pixCode || 'Código PIX n
 
 // Load order data from sessionStorage
 var plano = sessionStorage.getItem('plano') || '1060';
-var bonus = sessionStorage.getItem('bonus') || '106';
+var bonus = sessionStorage.getItem('bonus') || '212';
 var totalPreco = sessionStorage.getItem('total_preco') || sessionStorage.getItem('preco') || '0';
 var uid = sessionStorage.getItem('uid') || '-';
 
@@ -363,24 +367,52 @@ function closeCopiedPopup(){
     document.getElementById('cp-overlay').classList.remove('active');
 }
 
-// Auto-check payment status
+// ── Polling do status ────────────────────────────────────────────────────────
+// Contrato DuttyFy: intervalo minimo de 5s, status 'COMPLETED' quando pago,
+// sessao encerra em 15 minutos.
+var INTERVALO_MS = 5000;
+var LIMITE_SESSAO_MS = 15 * 60 * 1000;
+
 var checkInterval = null;
-if(txHash){
+var sessionTimeout = null;
+
+function pararPolling(){
+    if(checkInterval){ clearInterval(checkInterval); checkInterval = null; }
+    if(sessionTimeout){ clearTimeout(sessionTimeout); sessionTimeout = null; }
+    document.getElementById('px-status-checking').style.display = 'none';
+}
+
+function mostrarPago(){
+    pararPolling();
+    var el = document.getElementById('px-status-paid');
+    el.classList.add('paid');
+    el.style.display = 'block';
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function mostrarExpirado(){
+    pararPolling();
+    var el = document.getElementById('px-status-expired');
+    el.classList.add('expired');
+    el.style.display = 'block';
+}
+
+if(transactionId){
     document.getElementById('px-status-checking').style.display = 'block';
+
     checkInterval = setInterval(function(){
-        fetch('/api/check-tx?hash=' + txHash)
-            .then(function(r){ return r.json(); })
+        fetch('/api/check-tx?transactionId=' + encodeURIComponent(transactionId))
+            .then(function(r){ return r.ok ? r.json() : null; })
             .then(function(data){
-                if(data && (data.status === 'paid' || data.payment_status === 'paid' || data.status === 'approved')){
-                    clearInterval(checkInterval);
-                    document.getElementById('px-status-checking').style.display = 'none';
-                    var paidEl = document.getElementById('px-status-paid');
-                    paidEl.classList.add('paid');
-                    paidEl.style.display = 'block';
+                if(data && data.status === 'COMPLETED'){
+                    mostrarPago();
                 }
             })
+            // Falha de rede ou 502: ignora e tenta no proximo ciclo.
             .catch(function(){});
-    }, 5000);
+    }, INTERVALO_MS);
+
+    sessionTimeout = setTimeout(mostrarExpirado, LIMITE_SESSAO_MS);
 }
 </script>
 </body>

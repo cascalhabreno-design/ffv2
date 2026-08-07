@@ -95,6 +95,14 @@ module.exports = async function handler(req, res) {
     }
     if (erro instanceof GatewayError) {
       console.error(`[create-pix] ${erro.message}`);
+      // 4xx do gateway (exceto 401) significa dado do cliente recusado — por
+      // exemplo CPF inexistente. Repetir nao resolve, entao avisamos o cliente
+      // em vez de devolver um erro generico que gera loop de tentativas.
+      if (erro.statusHttp >= 400 && erro.statusHttp < 500 && erro.statusHttp !== 401) {
+        return res.status(400).json({
+          error: 'Confira seu CPF, telefone e e-mail e tente novamente.',
+        });
+      }
       return res.status(502).json({ error: 'Não foi possível gerar o PIX. Tente novamente.' });
     }
     console.error('[create-pix] erro inesperado:', erro);

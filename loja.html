@@ -160,21 +160,21 @@
 
                 <!-- 4 Diamond options -->
                 <div class="denom-grid" style="grid-template-columns:repeat(4,1fr);">
-                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','12,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="12,90">
+                    <div class="denom-card selected" onclick="selectDenom(this,'dia-1060','1060','212','14,90')" data-sku="dia-1060" data-diamonds="1060" data-bonus="212" data-price="14,90">
                         <img src="images/point.png" alt="💎"><span>1.060</span>
-                        <div class="denom-price">R$ 12,90</div>
+                        <div class="denom-price">R$ 14,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'2180','218','17,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="17,90">
+                    <div class="denom-card" onclick="selectDenom(this,'dia-2180','2180','654','19,90')" data-sku="dia-2180" data-diamonds="2180" data-bonus="654" data-price="19,90">
                         <img src="images/point.png" alt="💎"><span>2.180</span>
-                        <div class="denom-price">R$ 17,90</div>
-                    </div>
-                    <div class="denom-card" onclick="selectDenom(this,'5600','560','19,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="19,90">
-                        <img src="images/point.png" alt="💎"><span>5.600</span>
                         <div class="denom-price">R$ 19,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','49,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="49,90">
+                    <div class="denom-card" onclick="selectDenom(this,'dia-5600','5600','1120','37,79')" data-sku="dia-5600" data-diamonds="5600" data-bonus="1120" data-price="37,79">
+                        <img src="images/point.png" alt="💎"><span>5.600</span>
+                        <div class="denom-price">R$ 37,79</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'dia-22400','22400','4480','149,90')" data-sku="dia-22400" data-diamonds="22400" data-bonus="4480" data-price="149,90">
                         <img src="images/point.png" alt="💎"><span>22.400</span>
-                        <div class="denom-price">R$ 49,90</div>
+                        <div class="denom-price">R$ 149,90</div>
                     </div>
                 </div>
 
@@ -182,17 +182,17 @@
                 <div style="margin-top:24px;">
                     <div class="offers-title">Ofertas especiais <hr></div>
                     <div class="offers-grid" style="grid-template-columns:repeat(3,1fr);">
-                        <div class="offer-card" onclick="selectOffer(this,'semanal','0','8,90','off_4nfa96t3k8')">
+                        <div class="offer-card" onclick="selectOffer(this,'ofr-semanal','Assinatura Semanal','8,90')">
                             <img class="offer-card-img" src="images/ass_semanal.png" alt="Assinatura Semanal">
                             <div class="offer-card-name">Assinatura Semanal</div>
                             <div class="offer-card-price">R$ 8,90</div>
                         </div>
-                        <div class="offer-card" onclick="selectOffer(this,'mensal','0','19,90','off_4nfa96t3k8')">
+                        <div class="offer-card" onclick="selectOffer(this,'ofr-mensal','Assinatura Mensal','19,90')">
                             <img class="offer-card-img" src="images/ass_mensal.png" alt="Assinatura Mensal">
                             <div class="offer-card-name">Assinatura Mensal</div>
                             <div class="offer-card-price">R$ 19,90</div>
                         </div>
-                        <div class="offer-card" onclick="selectOffer(this,'booyah','0','12,90','off_4nfa96t3k8')">
+                        <div class="offer-card" onclick="selectOffer(this,'ofr-booyah','Passe Booyah Premium Plus','12,90')">
                             <img class="offer-card-img" src="images/ass_booyah.png" alt="Passe Booyah Premium Plus">
                             <div class="offer-card-name">Passe Booyah Premium Plus</div>
                             <div class="offer-card-price">R$ 12,90</div>
@@ -263,9 +263,21 @@
     window.addEventListener('vslEnded',start);
 })();
 
-// State
-var diamondSel = {diamonds:'1060',bonus:'106',price:12.90,offerHash:'off_4nfa96t3k8'};
-var offerSel = null; // {label, price, offerHash}
+// ── Rastreamento: guarda a query string bruta da entrada ────────────────────
+// A DuttyFy espera a query string inteira, sem filtrar nada (utm_*, fbclid,
+// fbp, etc.). Primeiro toque vence: nao sobrescreve se ja houver valor.
+(function(){
+    var bruta = window.location.search.replace(/^\?/,'');
+    if(bruta && !sessionStorage.getItem('utm_raw')){
+        sessionStorage.setItem('utm_raw', bruta);
+    }
+})();
+// ────────────────────────────────────────────────────────────────────────────
+
+// State — 'sku' e o que o backend usa para resolver o preco real.
+// Os campos de preco aqui servem apenas para exibicao na tela.
+var diamondSel = {sku:'dia-1060',diamonds:'1060',bonus:'212',price:14.90};
+var offerSel = null; // {sku, label, price}
 
 function updateBar(){
     var totalPrice = diamondSel.price;
@@ -275,21 +287,21 @@ function updateBar(){
     document.getElementById('bar-price').textContent='R$ '+totalPrice.toFixed(2).replace('.',',');
 }
 
-function selectDenom(el,diamonds,bonus,price,offerHash){
+function selectDenom(el,sku,diamonds,bonus,price){
     document.querySelectorAll('.denom-card').forEach(function(c){c.classList.remove('selected');});
     el.classList.add('selected');
-    diamondSel={diamonds:diamonds,bonus:bonus,price:parseFloat(price.replace(',','.')),offerHash:offerHash};
+    diamondSel={sku:sku,diamonds:diamonds,bonus:bonus,price:parseFloat(price.replace(',','.'))};
     updateBar();
 }
 
-function selectOffer(el,name,bonus,price,offerHash){
+function selectOffer(el,sku,name,price){
     if(el.classList.contains('selected')){
         el.classList.remove('selected');
         offerSel=null;
     } else {
         document.querySelectorAll('.offer-card').forEach(function(c){c.classList.remove('selected');});
         el.classList.add('selected');
-        offerSel={label:name,price:parseFloat(price.replace(',','.')),offerHash:offerHash};
+        offerSel={sku:sku,label:name,price:parseFloat(price.replace(',','.'))};
     }
     updateBar();
 }
@@ -329,6 +341,10 @@ function handleLogout(){
 }
 
 function goToCheckout(){
+    // SKUs: e o que o backend usa para calcular o valor cobrado.
+    sessionStorage.setItem('denom_sku',diamondSel.sku);
+    sessionStorage.setItem('oferta_sku',offerSel ? offerSel.sku : '');
+    // Demais chaves: exibicao apenas.
     sessionStorage.setItem('plano',diamondSel.diamonds);
     sessionStorage.setItem('bonus',diamondSel.bonus);
     var totalPrice = diamondSel.price;
@@ -337,8 +353,6 @@ function goToCheckout(){
     sessionStorage.setItem('tipo','diamonds');
     sessionStorage.setItem('label',offerSel ? offerSel.label : '');
     sessionStorage.setItem('offer_price',offerSel ? offerSel.price.toFixed(2) : '0');
-    sessionStorage.setItem('offer_hash',diamondSel.offerHash);
-    sessionStorage.setItem('product_hash','ykhbyvhkny');
     window.location.href='checkout.html';
 }
 

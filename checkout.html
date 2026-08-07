@@ -179,7 +179,7 @@
     <div class="ck-summary" style="margin-top:0;">
         <div class="ck-row">
             <div class="ck-row-label">Preço</div>
-            <div class="ck-row-value"><span id="ck-price">R$ 12,90</span></div>
+            <div class="ck-row-value"><span id="ck-price">R$ 14,90</span></div>
         </div>
         <div class="ck-row">
             <div class="ck-row-label">Método de pagamento</div>
@@ -214,7 +214,7 @@
 
         <div class="ck-terms">
             Ao clicar em "Prosseguir para Pagamento", atesto que li e concordo com os
-            <a href="#">termos de uso</a> e com a <a href="#">política de privacidade</a> do PagSeguro
+            <a href="#">termos de uso</a> e com a <a href="#">política de privacidade</a>
         </div>
 
         <button type="button" class="ck-btn disabled" id="payment-button" onclick="goToPagamento()" disabled>
@@ -228,7 +228,7 @@
     <div class="ob-modal">
         <div class="ob-title">Promoção de 9 Anos</div>
         <div class="ob-list" id="ob-list">
-            <div class="ob-item" onclick="toggleOB(this)" data-price="1799">
+            <div class="ob-item" onclick="toggleOB(this)" data-price="1799" data-sku="bmp-calca-angelical">
                 <div class="ob-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
                 <img class="ob-img" src="images/orderbumps/calca-angelical.jpg" alt="Calça Angelical Azul">
                 <div class="ob-info">
@@ -236,7 +236,7 @@
                     <div class="ob-prices"><span class="ob-old">R$ 99,99</span><span class="ob-new">R$ 17,99</span></div>
                 </div>
             </div>
-            <div class="ob-item" onclick="toggleOB(this)" data-price="1584">
+            <div class="ob-item" onclick="toggleOB(this)" data-price="1584" data-sku="bmp-2180-diamantes">
                 <div class="ob-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
                 <img class="ob-img" src="images/orderbumps/2180-diamantes.jpg" alt="2180 Diamantes">
                 <div class="ob-info">
@@ -244,7 +244,7 @@
                     <div class="ob-prices"><span class="ob-old">R$ 87,99</span><span class="ob-new">R$ 15,84</span></div>
                 </div>
             </div>
-            <div class="ob-item" onclick="toggleOB(this)" data-price="1439">
+            <div class="ob-item" onclick="toggleOB(this)" data-price="1439" data-sku="bmp-conjunto-coelhao">
                 <div class="ob-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
                 <img class="ob-img" src="images/orderbumps/conjunto-coelhao.jpg" alt="Conjunto Coelhão">
                 <div class="ob-info">
@@ -252,7 +252,7 @@
                     <div class="ob-prices"><span class="ob-old">R$ 17,99</span><span class="ob-new">R$ 14,39</span></div>
                 </div>
             </div>
-            <div class="ob-item" onclick="toggleOB(this)" data-price="1399">
+            <div class="ob-item" onclick="toggleOB(this)" data-price="1399" data-sku="bmp-guardiao-lendario">
                 <div class="ob-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
                 <img class="ob-img" src="images/orderbumps/guardiao-lendario.jpg" alt="Conjunto Guardião Lendário">
                 <div class="ob-info">
@@ -260,7 +260,7 @@
                     <div class="ob-prices"><span class="ob-old">R$ 74,99</span><span class="ob-new">R$ 13,99</span></div>
                 </div>
             </div>
-            <div class="ob-item" onclick="toggleOB(this)" data-price="1782">
+            <div class="ob-item" onclick="toggleOB(this)" data-price="1782" data-sku="bmp-barba-velho">
                 <div class="ob-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
                 <img class="ob-img" src="images/orderbumps/barba-velho.jpg" alt="Máscara Antiga Barba do Velho">
                 <div class="ob-info">
@@ -271,7 +271,7 @@
         </div>
         <div class="ob-total-bar">
             <div class="ob-total-label">Total:</div>
-            <div class="ob-total-value" id="ob-total">R$ 12,90</div>
+            <div class="ob-total-value" id="ob-total">R$ 14,90</div>
         </div>
         <button class="ob-finalize" onclick="finalizeOrder()">FINALIZAR PEDIDO</button>
     </div>
@@ -289,8 +289,8 @@
 // Load order data from sessionStorage
 window.addEventListener('DOMContentLoaded', function(){
     var plano = sessionStorage.getItem('plano') || '1060';
-    var bonus = sessionStorage.getItem('bonus') || '106';
-    var preco = sessionStorage.getItem('preco') || '12.90';
+    var bonus = sessionStorage.getItem('bonus') || '212';
+    var preco = sessionStorage.getItem('preco') || '14.90';
     var uid = sessionStorage.getItem('uid') || '-';
     var tipo = sessionStorage.getItem('tipo') || 'diamonds';
 
@@ -359,7 +359,7 @@ document.getElementById('name-input').addEventListener('input',validateForm);
 document.getElementById('email-input').addEventListener('input',validateForm);
 
 // Base price from sessionStorage
-var basePrice = parseFloat(sessionStorage.getItem('preco') || '12.90');
+var basePrice = parseFloat(sessionStorage.getItem('preco') || '14.90');
 
 // Toggle order bump item
 function toggleOB(el){
@@ -388,25 +388,18 @@ document.getElementById('ob-overlay').addEventListener('click', function(e){
     if(e.target === this) this.classList.remove('active');
 });
 
-// ── UTM capture ──────────────────────────────────────────────────────────────
+// ── Rastreamento ─────────────────────────────────────────────────────────────
+// A DuttyFy recebe a query string bruta, sem filtro. Normalmente ela e
+// capturada em loja.html; este bloco cobre quem cai direto no checkout.
 (function(){
-    var params = new URLSearchParams(window.location.search);
-    var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'];
-    utmKeys.forEach(function(k){
-        var v = params.get(k);
-        if(v) sessionStorage.setItem(k, v);
-    });
+    var bruta = window.location.search.replace(/^\?/,'');
+    if(bruta && !sessionStorage.getItem('utm_raw')){
+        sessionStorage.setItem('utm_raw', bruta);
+    }
 })();
-
-function getUTMs(){
-    var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'];
-    var obj = {};
-    keys.forEach(function(k){ obj[k] = sessionStorage.getItem(k) || ''; });
-    return obj;
-}
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Finalize order = generate PIX via IronPay API
+// Finaliza o pedido: envia SKUs ao backend, que cria a cobranca na DuttyFy
 async function finalizeOrder(){
     var btn = document.querySelector('.ob-finalize');
     btn.textContent = 'Gerando PIX...';
@@ -419,36 +412,30 @@ async function finalizeOrder(){
     // CPF: apenas digitos, enviado somente ao gateway (nao persistido localmente)
     var cpf=document.getElementById('cpf-input').value.replace(/\D/g,'');
 
-    // Collect selected order bumps
-    var bumps = [];
+    // Order bumps selecionados: envia SKUs, nao precos.
+    var bumpSkus = [];
+    var bumpNames = [];
     document.querySelectorAll('.ob-item.checked').forEach(function(item){
-        bumps.push({
-            name: item.querySelector('.ob-name').textContent,
-            priceInCents: parseInt(item.getAttribute('data-price'))
-        });
+        bumpSkus.push(item.getAttribute('data-sku'));
+        bumpNames.push(item.querySelector('.ob-name').textContent);
     });
 
-    // Calculate total
-    var extraCents = bumps.reduce(function(s,b){return s+b.priceInCents;},0);
+    // Total local: apenas para exibicao e para o pixel. O valor cobrado
+    // e calculado no servidor a partir dos SKUs (ver lib/products.js).
+    var extraCents = 0;
+    document.querySelectorAll('.ob-item.checked').forEach(function(item){
+        extraCents += parseInt(item.getAttribute('data-price'));
+    });
     var totalPrice = basePrice + (extraCents/100);
 
-    // Save customer data
+    // Dados do cliente para preencher em compras futuras.
+    // CPF fica fora de proposito: nao e persistido.
     try{
         localStorage.setItem('ff_nome',nome);
         localStorage.setItem('ff_email',email);
         localStorage.setItem('ff_telefone',telefone);
-        sessionStorage.setItem('total_preco', totalPrice.toFixed(2));
-        sessionStorage.setItem('order_bumps', JSON.stringify(bumps));
+        sessionStorage.setItem('order_bumps', JSON.stringify(bumpNames));
     }catch(e){}
-
-    // Build product title
-    var plano = sessionStorage.getItem('plano') || '1060';
-    var bonus = sessionStorage.getItem('bonus') || '106';
-    var diamondTotal = parseInt(plano) + parseInt(bonus);
-    var productTitle = diamondTotal + ' Diamantes Free Fire';
-    if(bumps.length > 0){
-        productTitle += ' + ' + bumps.map(function(b){return b.name;}).join(', ');
-    }
 
     // ── Fire InitiateCheckout (IC) ────────────────────────────────────────────
     try {
@@ -458,59 +445,48 @@ async function finalizeOrder(){
     } catch(e){}
     // ─────────────────────────────────────────────────────────────────────────
 
-    var utms = getUTMs();
+    function falhar(mensagem){
+        alert(mensagem);
+        btn.textContent = 'FINALIZAR PEDIDO';
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    }
 
     try {
         var response = await fetch('/api/create-pix', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                amount: totalPrice.toFixed(2),
+                denom_sku: sessionStorage.getItem('denom_sku') || 'dia-1060',
+                oferta_sku: sessionStorage.getItem('oferta_sku') || '',
+                bump_skus: bumpSkus,
+                uid: sessionStorage.getItem('uid') || '',
                 nome: nome,
                 email: email,
                 telefone: telefone,
                 cpf: cpf,
-                product_title: productTitle,
-                offer_hash: sessionStorage.getItem('offer_hash') || 'off_4nfa96t3k8',
-                product_hash: sessionStorage.getItem('product_hash') || 'ykhbyvhkny',
-                utm_source: utms.utm_source,
-                utm_medium: utms.utm_medium,
-                utm_campaign: utms.utm_campaign,
-                utm_term: utms.utm_term,
-                utm_content: utms.utm_content,
-                src: utms.src
+                utm: sessionStorage.getItem('utm_raw') || ''
             })
         });
 
-        var data = await response.json();
+        var data = await response.json().catch(function(){ return null; });
 
-        // IronPay returns pix.pix_qr_code
-        var pixCode = null;
-        if(data && data.pix && data.pix.pix_qr_code) {
-            pixCode = data.pix.pix_qr_code;
-        } else if(data && data.pix && data.pix.qrcode) {
-            pixCode = data.pix.qrcode;
-        } else if(data && data.pix_qrcode) {
-            pixCode = data.pix_qrcode;
+        if(!response.ok || !data || !data.pixCode || !data.transactionId){
+            return falhar('Erro ao gerar PIX: ' + ((data && data.error) || 'tente novamente.'));
         }
 
-        if(pixCode) {
-            var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
-            var txid = data.hash || data.id || '';
-            window.location.href = 'pixd3d1.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid;
-        } else {
-            var errorMsg = data.message || data.error || JSON.stringify(data);
-            alert('Erro ao gerar PIX: ' + errorMsg);
-            btn.textContent = 'FINALIZAR PEDIDO';
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
+        // Guarda em sessionStorage em vez da URL: o codigo PIX nao vaza
+        // para o historico do navegador nem para o referrer.
+        sessionStorage.setItem('pix_code', data.pixCode);
+        sessionStorage.setItem('transaction_id', data.transactionId);
+        // Valor autoritativo, vindo do servidor.
+        if(data.amountInCents){
+            sessionStorage.setItem('total_preco', (data.amountInCents/100).toFixed(2));
         }
+        window.location.href = 'pixd3d1.html';
     } catch(err) {
         console.error('Erro:', err);
-        alert('Erro de conexão. Tente novamente.');
-        btn.textContent = 'FINALIZAR PEDIDO';
-        btn.style.opacity = '1';
-        btn.style.pointerEvents = 'auto';
+        falhar('Erro de conexão. Tente novamente.');
     }
 }
 </script>
