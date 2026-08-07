@@ -300,7 +300,9 @@ var transactionId = sessionStorage.getItem('transaction_id') || params.get('txid
 
 // QR Code gerado a partir do pixCode (a DuttyFy nao devolve imagem).
 if(pixCode){
-    document.getElementById('pix-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pixCode);
+    document.getElementById('pix-qr-img').src =
+    'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' +
+    encodeURIComponent(pixCode);
 }
 
 // Set PIX code text
