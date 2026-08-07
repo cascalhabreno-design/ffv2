@@ -1,0 +1,22 @@
+# Credenciais / variáveis de ambiente — NUNCA commitar
+.env
+.env.local
+.env.*.local
+
+# Dependências
+node_modules/
+
+# Vercel
+.vercel/
+
+# Claude Code (config local)
+.claude/settings.local.json
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
