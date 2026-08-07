@@ -353,7 +353,7 @@ function goToCheckout(){
     sessionStorage.setItem('tipo','diamonds');
     sessionStorage.setItem('label',offerSel ? offerSel.label : '');
     sessionStorage.setItem('offer_price',offerSel ? offerSel.price.toFixed(2) : '0');
-    window.location.href='checkout.html'; + window.location.search;
+    window.location.href='checkout.html' + window.location.search;
 }
 
 // ── Social Proof Notifications ──────────────────────────────────────────────
