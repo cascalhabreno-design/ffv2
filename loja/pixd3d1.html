@@ -387,10 +387,14 @@ function pararPolling(){
 
 function mostrarPago(){
     pararPolling();
+
     var el = document.getElementById('px-status-paid');
     el.classList.add('paid');
     el.style.display = 'block';
-    el.scrollIntoView({behavior:'smooth', block:'center'});
+
+    setTimeout(function(){
+        window.location.href = 'verificacao.html';
+    }, 1000);
 }
 
 function mostrarExpirado(){
