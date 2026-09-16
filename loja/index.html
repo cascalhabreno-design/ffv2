@@ -11,17 +11,25 @@
     <link rel="icon" href="images/iconff.png" type="image/png">
     <link rel="stylesheet" href="css/loja.css">
     <style>
+        /* Carousel Banner */
+.carousel{position:relative;width:100%;overflow:hidden;touch-action:pan-y;background:#000;}
+.carousel-track{display:flex;width:100%;transition:transform .45s cubic-bezier(.25,.8,.25,1);will-change:transform;}
+.carousel-slide{flex:0 0 100%;width:100%;}
+.carousel-slide img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;}
+.carousel-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;align-items:center;gap:6px;z-index:2;}
+.carousel-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55);transition:all .25s ease;box-shadow:0 1px 3px rgba(0,0,0,.35);}
+.carousel-dot.active{width:18px;border-radius:10px;background:#fff;}
     /* Bottom Purchase Bar */
-    .buy-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:12px 16px;z-index:100;display:none;}
-    .buy-bar-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:16px;}
-    .buy-bar-info{text-align:right;}
-    .buy-bar-diamonds{font-size:14px;font-weight:500;color:#333;display:flex;align-items:center;gap:4px;justify-content:flex-end;}
-    .buy-bar-diamonds img{width:14px;height:14px;}
-    .buy-bar-total{font-size:14px;color:#333;}
-    .buy-bar-total strong{color:#D81A0D;font-size:16px;}
-    .buy-bar-btn{background:#D81A0D;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:background 0.2s;}
-    .buy-bar-btn:hover{background:#b5160b;}
-    .buy-bar-btn svg{width:18px;height:18px;}
+.buy-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:12px 16px;z-index:100;display:none;}
+.buy-bar-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.buy-bar-info{text-align:left;}
+.buy-bar-diamonds{font-size:14px;font-weight:500;color:#333;display:flex;align-items:center;gap:4px;justify-content:flex-start;}
+.buy-bar-diamonds img{width:14px;height:14px;}
+.buy-bar-total{font-size:14px;color:#333;}
+.buy-bar-total strong{color:#D81A0D;font-size:16px;}
+.buy-bar-btn{background:#D81A0D;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:background 0.2s;}
+.buy-bar-btn:hover{background:#b5160b;}
+.buy-bar-btn svg{width:18px;height:18px;}
     /* Pix card with PROMO */
     .pix-card{position:relative;background:#FFF5F5;border:2px solid #D81A0D;border-radius:6px;padding:16px 20px;max-width:280px;cursor:pointer;}
     .pix-card img{height:28px;object-fit:contain;}
@@ -50,7 +58,18 @@
 </header>
 
 <!-- Carousel Banner -->
-<div class="carousel"><img class="carousel-img" src="images/bannerloja.png" alt="Promoção"></div>
+<div class="carousel">
+    <div class="carousel-track" id="carousel-track">
+        <div class="carousel-slide"><img src="images/bannerloja.png" alt="Promoção"></div>
+        <div class="carousel-slide"><img src="images/bannerloja2.png" alt="Promoção"></div>
+        <div class="carousel-slide"><img src="images/bannerloja3.png" alt="Promoção"></div>
+    </div>
+    <div class="carousel-dots" id="carousel-dots">
+        <span class="carousel-dot active"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+    </div>
+</div>
 <div class="gold-bar"></div>
 
 <!-- Game Selection -->
@@ -75,7 +94,7 @@
             <div class="app-banner-content">
                 <img class="app-banner-icon" src="images/produto-novo.png" alt="FF">
                 <div class="app-banner-info">
-                    <div class="app-banner-title">9 Anos Free Fire</div>
+                    <div class="app-banner-title">Free Fire x NARUTO SHIPPUDEN</div>
                     <div class="app-banner-badge">
                         <svg width="14" height="14" viewBox="0 0 80 80" fill="currentColor"><path d="M54 34a3 3 0 00-4-4L38 42l-6-6a3 3 0 00-4 4l8 8a3 3 0 004 0L54 34z"/><path fill-rule="evenodd" d="M43 3a8 8 0 00-6 0L9 19a5 5 0 00-4 6c0 15 5 39 32 52a5 5 0 006 0c27-13 32-37 32-52a5 5 0 00-4-6L43 3zm-3 6a1 1 0 011 0l29 16c0 14-5 35-29 48a1 1 0 01-1 0C12 60 7 39 7 25L40 9z"/></svg>
                         Pagamento 100% Seguro
@@ -232,21 +251,144 @@
 <script>
 // VSL Modal
 (function(){
-    var v=document.getElementById('vsl-video'),m=document.getElementById('vsl-modal'),p=document.getElementById('vsl-play'),c=document.getElementById('vsl-close');
+    var v=document.getElementById('vsl-video');
+    var m=document.getElementById('vsl-modal');
+    var p=document.getElementById('vsl-play');
+    var c=document.getElementById('vsl-close');
+    if(!v || !m || !p || !c)return;
     function close(){m.style.display='none';v.pause();window.dispatchEvent(new CustomEvent('vslEnded'));}
     p.addEventListener('click',function(){p.style.opacity='0';setTimeout(function(){p.style.display='none';},300);v.play();});
-    v.addEventListener('ended',close);c.addEventListener('click',close);
+    v.addEventListener('ended',close);
+    c.addEventListener('click',close);
     m.addEventListener('click',function(e){if(e.target===m)close();});
+})();
+
+// Carousel Banner
+(function(){
+    var track=document.getElementById('carousel-track');
+    var dots=document.querySelectorAll('.carousel-dot');
+    if(!track || !dots.length)return;
+
+    var index=0;
+    var startX=0;
+    var currentX=0;
+    var dragging=false;
+    var autoplay;
+
+    function goToSlide(i,animate){
+        index=(i+dots.length)%dots.length;
+        track.style.transition=animate===false?'none':'transform .45s cubic-bezier(.25,.8,.25,1)';
+        track.style.transform='translateX(-'+(index*100)+'%)';
+        dots.forEach(function(dot,n){dot.classList.toggle('active',n===index);});
+    }
+
+    function startAutoplay(){
+        clearInterval(autoplay);
+        autoplay=setInterval(function(){goToSlide(index+1,true);},5000);
+    }
+
+    function stopAutoplay(){
+        clearInterval(autoplay);
+    }
+
+    dots.forEach(function(dot,i){
+        dot.addEventListener('click',function(){
+            goToSlide(i,true);
+            startAutoplay();
+        });
+    });
+
+    track.addEventListener('touchstart',function(e){
+        dragging=true;
+        startX=e.touches[0].clientX;
+        currentX=startX;
+        stopAutoplay();
+        track.style.transition='none';
+    },{passive:true});
+
+    track.addEventListener('touchmove',function(e){
+        if(!dragging)return;
+        currentX=e.touches[0].clientX;
+        var diff=currentX-startX;
+        var offset=(-(index*100));
+        var percent=(diff/window.innerWidth)*100;
+        track.style.transform='translateX('+(offset+percent)+'%)';
+    },{passive:true});
+
+    track.addEventListener('touchend',function(){
+        if(!dragging)return;
+        dragging=false;
+        var diff=currentX-startX;
+
+        if(Math.abs(diff)>50){
+            goToSlide(index+(diff<0?1:-1),true);
+        }else{
+            goToSlide(index,true);
+        }
+
+        startAutoplay();
+    });
+
+    track.addEventListener('mousedown',function(e){
+        dragging=true;
+        startX=e.clientX;
+        currentX=startX;
+        stopAutoplay();
+        track.style.transition='none';
+        e.preventDefault();
+    });
+
+    window.addEventListener('mousemove',function(e){
+        if(!dragging)return;
+        currentX=e.clientX;
+        var diff=currentX-startX;
+        var offset=-(index*100);
+        var percent=(diff/window.innerWidth)*100;
+        track.style.transform='translateX('+(offset+percent)+'%)';
+    });
+
+    window.addEventListener('mouseup',function(){
+        if(!dragging)return;
+        dragging=false;
+        var diff=currentX-startX;
+
+        if(Math.abs(diff)>50){
+            goToSlide(index+(diff<0?1:-1),true);
+        }else{
+            goToSlide(index,true);
+        }
+
+        startAutoplay();
+    });
+
+    goToSlide(0,false);
+    startAutoplay();
 })();
 
 // Countdown
 (function(){
-    var started=false,end;
-    function start(){if(started)return;started=true;end=Date.now()+10*60*1000;update();}
-    function update(){var r=end-Date.now();if(r<=0){document.getElementById('cd-min').textContent='00';document.getElementById('cd-sec').textContent='00';return;}
-    document.getElementById('cd-min').textContent=String(Math.floor(r/60000)).padStart(2,'0');
-    document.getElementById('cd-sec').textContent=String(Math.floor((r%60000)/1000)).padStart(2,'0');setTimeout(update,1000);}
-    window.addEventListener('vslEnded',start);
+    var min=document.getElementById('cd-min');
+    var sec=document.getElementById('cd-sec');
+    if(!min || !sec)return;
+
+    var end=Date.now()+10*60*1000;
+
+    function update(){
+        var r=end-Date.now();
+
+        if(r<=0){
+            min.textContent='00';
+            sec.textContent='00';
+            return;
+        }
+
+        min.textContent=String(Math.floor(r/60000)).padStart(2,'0');
+        sec.textContent=String(Math.floor((r%60000)/1000)).padStart(2,'0');
+
+        setTimeout(update,1000);
+    }
+
+    update();
 })();
 
 // ── Rastreamento: guarda a query string bruta da entrada ────────────────────
